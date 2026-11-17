@@ -106,6 +106,15 @@ make dev-teardown # Destroy the Kind cluster
 
 - Never widen RBAC beyond the generated `config/rbac/` manifests without review.
 
+## Design documents
+
+Cross-project and project-specific design proposals live under `designs/`
+(CNCF KEP/OTEP-inspired). When creating, reviewing or searching proposals,
+follow [`designs/AGENTS.md`](designs/AGENTS.md) and use the skills in
+`.claude/skills/` (`scaffold-design`, `review-design`, `query-designs`).
+Repo-local design docs in operator repositories (for example `docs/design/`)
+remain valid; `designs/AGENTS.md` defines how the two relate.
+
 ## Writing Red Hat Knowledgebase (KCS) content
 
 `docs/faq_draft.md` is destined for the Red Hat Customer Portal, so it uses Red Hat

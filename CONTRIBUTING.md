@@ -166,7 +166,7 @@ make dev-teardown # Destroy the Kind cluster
 - Browse the [medik8s.io](https://www.medik8s.io/) website for project background
 - Not looking to write code? We highly value non-code contributions! Improving documentation, expanding test coverage, and writing detailed bug reports are fantastic ways to get involved.
 
-If you want to work on something, comment on the issue to let others know. For larger changes — especially new features or API modifications — please open an issue to discuss the approach before submitting a PR.
+If you want to work on something, comment on the issue to let others know. For larger changes — especially new features or API modifications — please open an issue to discuss the approach before submitting a PR. Consider writing a design document first: cross-project and project-specific proposals live in the org-wide [design proposals](https://github.com/medik8s/.github/blob/main/designs/AGENTS.md) guide in the `.github` repository.
 
 ## Development Workflow
 
