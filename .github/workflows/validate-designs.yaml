@@ -1,0 +1,52 @@
+name: Validate Design Documents
+
+# Validates the proposals under designs/: naming, folder routing and the
+# YAML frontmatter schema from designs/AGENTS.md, plus the unit tests for
+# the validator itself. Runs against pull requests; on main it also runs in
+# --strict mode, which rejects unnumbered 0000- drafts that slipped through
+# a merge.
+
+on:
+  pull_request:
+    paths:
+      - 'designs/**'
+      - 'scripts/validate-designs.cjs'
+      - 'tests/validate-designs.test.cjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - '.prettierrc.json'
+      - '.github/workflows/validate-designs.yaml'
+  push:
+    branches: [main]
+    paths:
+      - 'designs/**'
+      - 'scripts/validate-designs.cjs'
+      - 'tests/validate-designs.test.cjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - '.prettierrc.json'
+      - '.github/workflows/validate-designs.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate designs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Validate designs (strict on main)
+        run: node scripts/validate-designs.cjs --strict
+        if: github.event_name == 'push'

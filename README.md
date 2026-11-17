@@ -7,6 +7,7 @@ Special repository for organization-wide reusable Templates, Workflows, and comm
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security Policy](SECURITY.md)
 - [Pull Request Template](.github/PULL_REQUEST_TEMPLATE.md)
+- [Design Documents](designs/AGENTS.md)
 - [Community Release Scripts](scripts/)
 - [PR CI Label Workflow](docs/pr-check-label.md)
 

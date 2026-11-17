@@ -38,3 +38,14 @@ In order to save cloud resources, we invite you to submit the PR as a draft and 
 
 In case you are unable to verify E2E test prior to submit the PR, we suggest to use the WIP (Work In Progress) title prefix (e.g. "[WIP] <Title of the PR>"), and then follow the above mentioned manual test steps. Once the E2E job passes, you can remove the WIP prefix and request a review.
 -->
+
+#### Design document changes
+<!--
+Skip this section entirely if this PR does not modify anything under `designs/`
+in the medik8s/.github repository.
+-->
+
+- [ ] Files follow [`designs/AGENTS.md`](https://github.com/medik8s/.github/blob/main/designs/AGENTS.md) (naming, folder routing, YAML frontmatter)
+- [ ] New proposals were renamed from the `0000-` draft prefix to this PR's number
+- [ ] Frontmatter `status` and `updated` reflect the current state
+- [ ] Moving to `implementable` or beyond: a structured design review was done (see the `review-design` skill)
