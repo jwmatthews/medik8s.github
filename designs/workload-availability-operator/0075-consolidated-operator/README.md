@@ -194,11 +194,22 @@ Where a change belongs:
   the WAO Deployment and the CSV-owned RBAC, but it does not remove the
   `cluster` config. With no running WAO, nothing processes the config's
   finalizer, so the Deployments, Services and ConfigMaps WAO applied for
-  enabled operands stay behind. The order is:
+  enabled operands stay behind. The finalizer removes only objects WAO applied.
+  It does not remove anything listed in `retainedResources`: it logs them and
+  then removes itself. The order is:
   1. Disable every enabled component, and wait for each phase to be `Disabled`
-     or `DisableIncomplete`.
-  2. Delete the config, and wait for its finalizer to complete.
-  3. Delete the Subscription and the CSV.
+     or `DisableIncomplete`. Finish or delete active work first (see above).
+  2. Remove what `retainedResources` lists, while WAO still runs. Agent
+     DaemonSets, such as SNR's `self-node-remediation-ds`, have an owner
+     reference to the component's config (`SelfNodeRemediationConfig` for SNR,
+     `StorageBasedRemediationConfig` for SBR). Deleting that config removes the
+     DaemonSet through garbage collection, and the phase then becomes
+     `Disabled`. WAO admission handles the SNR config delete, so WAO must be
+     running. Other retained objects, such as NHC's aggregation ClusterRole and
+     ConsolePlugin, are left by the operand. WAO never deletes them, so they
+     stay after uninstall unless the administrator removes them.
+  3. Delete the `cluster` config, and wait for its finalizer to complete.
+  4. Delete the Subscription and the CSV.
 
 ### Admission webhooks
 
