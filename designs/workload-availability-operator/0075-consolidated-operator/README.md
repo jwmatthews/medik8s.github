@@ -187,7 +187,11 @@ Where a change belongs:
 - Native objects a stopped manager would have reconciled are stranded: an
   active `NodeMaintenance` keeps its node cordoned, and SNR, SBR, FAR and MDR
   remediation objects keep their finalizers. A component should be disabled only
-  when it has no active work.
+  when it has no active work. Disabling a remediator (SNR, SBR, FAR or MDR)
+  while a `NodeHealthCheck` still references its template leaves later
+  remediation requests unprocessed, because the remediator's manager is
+  stopped. Pause or disable the dependent policy first, and keep it paused until
+  the remediator is enabled again.
 - Enabling can have immediate effects: SNR starts privileged node agents on
   every eligible node, behaving like a standalone SNR install.
 - **Uninstall** must remove the config while WAO is still running. OLM removes
@@ -348,7 +352,9 @@ because WAO's CSV owns the operand CRDs, so the old operators must be removed
 first.
 
 1. Enter a maintenance window.
-2. Ensure no remediation or node maintenance is in flight.
+2. Pause every `NodeHealthCheck` (`spec.pauseRequests`), then ensure no
+   remediation or node maintenance is in flight. Keep them paused until the
+   operators are removed.
 3. Back up the existing custom resources.
 4. Delete the custom resources and uninstall the existing operators.
 5. Install WAO.
@@ -357,7 +363,8 @@ first.
 
 State of the automation today: the scripts in `medik8s-cli` (`scripts/poc/`)
 implement backup, delete, install and rollback, and refuse to run a destructive
-step while a remediation or node maintenance is in progress. They are marked as
+step while a remediation or node maintenance is in progress. They do not yet
+pause `NodeHealthCheck` policies (step 2). They are marked as
 proofs of concept for disposable clusters. The `kubectl medik8s` plugin that
 would wrap them is designed but not implemented.
 
