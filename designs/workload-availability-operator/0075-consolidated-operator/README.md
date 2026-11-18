@@ -92,7 +92,7 @@ flowchart LR
 | Install | Creates all CRDs, all operand ServiceAccounts/Roles/bindings, WAO Deployment | Creates the `cluster` config with every component disabled if none exists; never overwrites one | Nothing runs |
 | Enable | | Applies the operand's Deployment, Services and ConfigMaps; reports readiness | Starts and reconciles its own CRs |
 | Disable | | Removes what it applied | Manager stops; objects it created itself can remain (see below) |
-| Uninstall | Removes CSV-owned objects | A finalizer on the config removes remaining operand objects | |
+| Uninstall | Removes CSV-owned objects | A finalizer on the config removes remaining operand objects, but only while WAO is running | |
 
 ### The `WorkloadAvailabilityConfig` API
 
@@ -190,6 +190,15 @@ Where a change belongs:
   when it has no active work.
 - Enabling can have immediate effects: SNR starts privileged node agents on
   every eligible node, behaving like a standalone SNR install.
+- **Uninstall** must remove the config while WAO is still running. OLM removes
+  the WAO Deployment and the CSV-owned RBAC, but it does not remove the
+  `cluster` config. With no running WAO, nothing processes the config's
+  finalizer, so the Deployments, Services and ConfigMaps WAO applied for
+  enabled operands stay behind. The order is:
+  1. Disable every enabled component, and wait for each phase to be `Disabled`
+     or `DisableIncomplete`.
+  2. Delete the config, and wait for its finalizer to complete.
+  3. Delete the Subscription and the CSV.
 
 ### Admission webhooks
 
